@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const jwt = require("jsonwebtoken");
 const { json, urlencoded } = require('body-parser')
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require('dotenv').config()
@@ -25,7 +26,7 @@ const client = new MongoClient(url, {
 const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-        return res.status(401).send({ message: "unauthorized access" });
+        return res.status(401).send({ message: "Unauthorized access" });
     }
     const token = authHeader.split(" ")[1];
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
@@ -50,7 +51,7 @@ async function run() {
             const access = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, {
                 expiresIn: "3d",
             });
-            res.send({ access });
+            res.json({ access });
         });
 
         // Add item
@@ -72,26 +73,20 @@ async function run() {
         // get all items with pagination
         app.get('/inventory', async (req, res) => {
             const { page = 0, size = 10 } = req.query
-            const cursor = inventoryCollection.find({})
+            const query = {}
+            const cursor = inventoryCollection.find(query)
             const data = await cursor.skip(parseInt(page) * parseInt(size)).limit(parseInt(size)).toArray()
             res.json(data)
         })
 
-        // get all inventory
-        app.get("/myInventory", verifyJWT, async (req, res) => {
-            const getEmail = req.query.email;
-            const decodedEmail = req.decoded.email;
+        // get items by user email
+        app.get("/my-inventory", verifyJWT, async (req, res) => {
+            const { email } = req.decoded;
+            const query = { email };
+            const cursor = inventoryCollection.find(query);
+            const data = await cursor.toArray();
+            res.json(data);
 
-            console.log(req.query);
-            const query = { email: getEmail };
-
-            if (getEmail === decodedEmail) {
-                const cursor = inventoryCollection.find(query);
-                const inventory = await cursor.toArray();
-                res.send(inventory);
-            } else {
-                res.status(403).send({ message: "forbidden access" });
-            }
         });
 
         // get inventory api
