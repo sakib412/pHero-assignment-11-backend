@@ -42,7 +42,7 @@ async function run() {
         await client.connect();
         const inventoryCollection = client
             .db(process.env.DB_NAME || 'demo')
-            .collection("items");
+            .collection("item");
 
         // Login route
         app.post("/login", async (req, res) => {
@@ -54,15 +54,28 @@ async function run() {
         });
 
         // Add item
-
         app.post('/inventory', async (req, res) => {
-
+            const { name, image, quantity, supplier, price, description, email } = req.body
+            const item = {
+                name,
+                image,
+                quantity,
+                supplier,
+                price,
+                description,
+                email
+            }
+            const data = await inventoryCollection.insertOne(item)
+            res.json(data)
         })
 
+        // get all items with pagination
         app.get('/inventory', async (req, res) => {
-            res.send({})
+            const { page = 0, size = 10 } = req.query
+            const cursor = inventoryCollection.find({})
+            const data = await cursor.skip(parseInt(page) * parseInt(size)).limit(parseInt(size)).toArray()
+            res.json(data)
         })
-
 
         // get all inventory
         app.get("/myInventory", verifyJWT, async (req, res) => {
