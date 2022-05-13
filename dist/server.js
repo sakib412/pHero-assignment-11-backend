@@ -46,23 +46,7 @@ app.get('/', (req, res) => {
   }));
 });
 app.use('/', _auth.default);
-app.use('/inventory', _inventory.default); // async function run() {
-//     try {
-//         // update inventory
-//         app.put("/updateInventory/:id", async (req, res) => {
-//             const id = req.params.id;
-//             const data = req.body;
-//             const filter = { _id: ObjectId(id) };
-//             const result = inventoryCollection.updateOne(
-//                 filter,
-//                 { $set: data },
-//                 { upsert: true }
-//             );
-//             res.send(result);
-//         });
-//     } finally {
-//     }
-// }
+app.use('/inventory', _inventory.default); // handle errors
 
 app.use(_errorHandler.default);
 

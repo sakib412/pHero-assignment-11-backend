@@ -27,33 +27,7 @@ app.get('/', (req, res) => {
 app.use('/', authRouter)
 app.use('/inventory', inventoryRouter)
 
-
-// async function run() {
-//     try {
-
-
-
-
-//         // update inventory
-//         app.put("/updateInventory/:id", async (req, res) => {
-//             const id = req.params.id;
-//             const data = req.body;
-//             const filter = { _id: ObjectId(id) };
-//             const result = inventoryCollection.updateOne(
-//                 filter,
-//                 { $set: data },
-//                 { upsert: true }
-//             );
-//             res.send(result);
-//         });
-
-
-
-//     } finally {
-//     }
-// }
-
-
+// handle errors
 app.use(errorHandler)
 export const start = async () => {
     try {

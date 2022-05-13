@@ -26,6 +26,7 @@ export const getItems = async (req, res) => {
         const totalPage = Math.ceil(totalData / size)
         const results = {
             currentPage: page,
+            totalData,
             totalPage,
             prevPage: page <= 1 ? null : page - 1,
             nextPage: page >= totalPage ? null : page + 1,
