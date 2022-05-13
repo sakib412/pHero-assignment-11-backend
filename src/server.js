@@ -1,42 +1,27 @@
-const express = require('express')
-const cors = require('cors')
-const jwt = require("jsonwebtoken");
-const { json, urlencoded } = require('body-parser')
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-require('dotenv').config()
+import express from 'express';
+import cors from 'cors';
+import { verify, sign } from "jsonwebtoken";
+import { json, urlencoded } from 'body-parser';
+import 'dotenv/config'
 
-// const url = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.pyy8w.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`
-const url = `mongodb://localhost:27017/${process.env.DB_NAME}`
-const app = express();
-const port = process.env.PORT || 5000
+import config from './config';
+import errorHandler from './middleware/errorHandler';
+import { successResponse } from './utils/response';
+
+export const app = express();
 
 // Middleware
 app.disable('x-powered-by')
 app.use(cors())
 app.use(json())
 app.use(urlencoded({ extended: true }))
+app.use(morgan(config.env || 'dev'))
 
+// Routes
+app.get('/', (req, res) => {
+    res.json(successResponse({ "message": "API is working" }));
+})
 
-const client = new MongoClient(url, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverApi: ServerApiVersion.v1,
-});
-
-const verifyJWT = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-        return res.status(401).send({ message: "Unauthorized access" });
-    }
-    const token = authHeader.split(" ")[1];
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(403).send({ message: "Forbidden access" });
-        }
-        req.decoded = decoded;
-        next();
-    });
-}
 
 async function run() {
     try {
@@ -48,7 +33,7 @@ async function run() {
         // Login route
         app.post("/login", async (req, res) => {
             const { email } = req.body;
-            const access = jwt.sign({ email }, process.env.ACCESS_TOKEN_SECRET, {
+            const access = sign({ email }, process.env.ACCESS_TOKEN_SECRET, {
                 expiresIn: "3d",
             });
             res.json({ access });
@@ -86,23 +71,6 @@ async function run() {
             const cursor = inventoryCollection.find(query);
             const data = await cursor.toArray();
             res.json(data);
-
-        });
-
-        // get inventory api
-        app.get("/inventory", async (req, res) => {
-            const getLimit = req.query.limit;
-            console.log(req.query);
-
-            const query = {};
-
-
-            const cursor = inventoryCollection.find(query);
-            let inventory;
-            getLimit
-                ? (inventory = await cursor.limit(6).toArray())
-                : (inventory = await cursor.toArray());
-            res.send(inventory);
         });
 
         // get inventory by id api
@@ -166,13 +134,20 @@ async function run() {
     }
 }
 
-run().catch(console.dir);
 
 app.get("/", (req, res) => {
     res.send("Server is running...");
 });
 
-app.listen(port, () => {
-    console.log("App listening on port: ", port)
 
-});
+app.use(errorHandler)
+export const start = async () => {
+    try {
+        await connect();
+        app.listen(config.port, () => {
+            console.log(`REST API on http://localhost:${config.port}/api`)
+        })
+    } catch (e) {
+        console.error(e)
+    }
+}
