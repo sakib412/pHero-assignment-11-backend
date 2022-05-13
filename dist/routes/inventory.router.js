@@ -16,5 +16,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const inventoryRouter = (0, _express.Router)();
 inventoryRouter.route('/').get(_inventory.getItems).post(_inventory.addItem);
 inventoryRouter.get('/me', _verifyJWT.default, _inventory.getLoggedInUserItems);
+inventoryRouter.route('/:id').get(_inventory.getSingleItem).put(_inventory.updateItemStock).delete(_inventory.deleteItem);
 var _default = inventoryRouter;
 exports.default = _default;

@@ -48,17 +48,6 @@ app.get('/', (req, res) => {
 app.use('/', _auth.default);
 app.use('/inventory', _inventory.default); // async function run() {
 //     try {
-//         // get inventory by id api
-//         app.get("/inventory/:id", (req, res) => {
-//             const id = req.params.id;
-//             console.log(id);
-//             const query = { _id: ObjectId(id) };
-//             inventoryCollection.findOne(query, function (err, result) {
-//                 console.log("error", err);
-//                 console.log("result", result);
-//                 res.send(JSON.stringify(result));
-//             });
-//         });
 //         // update inventory
 //         app.put("/updateInventory/:id", async (req, res) => {
 //             const id = req.params.id;
@@ -69,28 +58,6 @@ app.use('/inventory', _inventory.default); // async function run() {
 //                 { $set: data },
 //                 { upsert: true }
 //             );
-//             res.send(result);
-//         });
-//         // update restock stock  inventory
-//         app.put("/updateRestock/:id", async (req, res) => {
-//             const id = req.params.id;
-//             const quantityData = req.body;
-//             const filter = { _id: ObjectId(id) };
-//             console.log(quantityData, id);
-//             const result = inventoryCollection.updateOne(
-//                 filter,
-//                 { $set: quantityData },
-//                 { upsert: true }
-//             );
-//             res.send(result);
-//         });
-//         // delete inventory api
-//         app.delete("/deleteinventory/:id", async (req, res) => {
-//             const inventoryId = req.params;
-//             console.log(inventoryId);
-//             console.log("id", inventoryId);
-//             const query = { _id: ObjectId(inventoryId) };
-//             const result = await inventoryCollection.deleteOne(query);
 //             res.send(result);
 //         });
 //     } finally {
