@@ -1,36 +1,53 @@
-import express from 'express';
-import cors from 'cors';
-import morgan from 'morgan';
-import { json, urlencoded } from 'body-parser';
-import 'dotenv/config'
+"use strict";
 
-import config from './config';
-import errorHandler from './middleware/errorHandler';
-import { successResponse } from './utils/response';
-import { connect } from './utils/db';
-import authRouter from './routes/auth.router';
-import inventoryRouter from './routes/inventory.router';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.start = exports.app = void 0;
 
-export const app = express();
+var _express = _interopRequireDefault(require("express"));
 
-// Middleware
-app.disable('x-powered-by')
-app.use(cors())
-app.use(json())
-app.use(urlencoded({ extended: true }))
-app.use(morgan((config.env == 'dev' || config.env == 'development') ? 'dev' : 'combine'))
+var _cors = _interopRequireDefault(require("cors"));
 
-// Routes
+var _morgan = _interopRequireDefault(require("morgan"));
+
+var _bodyParser = require("body-parser");
+
+require("dotenv/config");
+
+var _config2 = _interopRequireDefault(require("./config"));
+
+var _errorHandler = _interopRequireDefault(require("./middleware/errorHandler"));
+
+var _response = require("./utils/response");
+
+var _db = require("./utils/db");
+
+var _auth = _interopRequireDefault(require("./routes/auth.router"));
+
+var _inventory = _interopRequireDefault(require("./routes/inventory.router"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const app = (0, _express.default)(); // Middleware
+
+exports.app = app;
+app.disable('x-powered-by');
+app.use((0, _cors.default)());
+app.use((0, _bodyParser.json)());
+app.use((0, _bodyParser.urlencoded)({
+  extended: true
+}));
+app.use((0, _morgan.default)(_config2.default.env == 'dev' || _config2.default.env == 'development' ? 'dev' : 'combine')); // Routes
+
 app.get('/', (req, res) => {
-    res.json(successResponse({ "message": "Server is running" }));
-})
-app.use('/', authRouter)
-app.use('/inventory', inventoryRouter)
-
-
-// async function run() {
+  res.json((0, _response.successResponse)({
+    "message": "Server is running"
+  }));
+});
+app.use('/', _auth.default);
+app.use('/inventory', _inventory.default); // async function run() {
 //     try {
-
 //         // get items by user email
 //         app.get("/my-inventory", verifyJWT, async (req, res) => {
 //             const { email } = req.decoded;
@@ -39,9 +56,7 @@ app.use('/inventory', inventoryRouter)
 //             const data = await cursor.toArray();
 //             res.json(data);
 //         });
-
 //         // get inventory by id api
-
 //         app.get("/inventory/:id", (req, res) => {
 //             const id = req.params.id;
 //             console.log(id);
@@ -52,9 +67,6 @@ app.use('/inventory', inventoryRouter)
 //                 res.send(JSON.stringify(result));
 //             });
 //         });
-
-
-
 //         // update inventory
 //         app.put("/updateInventory/:id", async (req, res) => {
 //             const id = req.params.id;
@@ -67,7 +79,6 @@ app.use('/inventory', inventoryRouter)
 //             );
 //             res.send(result);
 //         });
-
 //         // update restock stock  inventory
 //         app.put("/updateRestock/:id", async (req, res) => {
 //             const id = req.params.id;
@@ -81,12 +92,10 @@ app.use('/inventory', inventoryRouter)
 //             );
 //             res.send(result);
 //         });
-
 //         // delete inventory api
 //         app.delete("/deleteinventory/:id", async (req, res) => {
 //             const inventoryId = req.params;
 //             console.log(inventoryId);
-
 //             console.log("id", inventoryId);
 //             const query = { _id: ObjectId(inventoryId) };
 //             const result = await inventoryCollection.deleteOne(query);
@@ -96,15 +105,17 @@ app.use('/inventory', inventoryRouter)
 //     }
 // }
 
+app.use(_errorHandler.default);
 
-app.use(errorHandler)
-export const start = async () => {
-    try {
-        await connect();
-        app.listen(config.port, () => {
-            console.log(`REST API on http://localhost:${config.port}/`)
-        })
-    } catch (e) {
-        console.error(e)
-    }
-}
+const start = async () => {
+  try {
+    await (0, _db.connect)();
+    app.listen(_config2.default.port, () => {
+      console.log(`REST API on http://localhost:${_config2.default.port}/`);
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
+
+exports.start = start;
