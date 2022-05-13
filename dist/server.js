@@ -48,14 +48,6 @@ app.get('/', (req, res) => {
 app.use('/', _auth.default);
 app.use('/inventory', _inventory.default); // async function run() {
 //     try {
-//         // get items by user email
-//         app.get("/my-inventory", verifyJWT, async (req, res) => {
-//             const { email } = req.decoded;
-//             const query = { email };
-//             const cursor = inventoryCollection.find(query);
-//             const data = await cursor.toArray();
-//             res.json(data);
-//         });
 //         // get inventory by id api
 //         app.get("/inventory/:id", (req, res) => {
 //             const id = req.params.id;

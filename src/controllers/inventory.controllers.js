@@ -28,3 +28,23 @@ export const getItems = async (req, res) => {
     }
     res.json(successResponse(results))
 }
+
+export const getLoggedInUserItems = async (req, res) => {
+    const { email } = req.decoded;
+    let { page = 1, size = 10 } = req.query
+    page = parseInt(page)
+    size = parseInt(size)
+    const query = { email }
+    const totalData = await Inventory.find().estimatedDocumentCount()
+    const data = await Inventory.find(query).skip((page - 1) * size).limit(size).exec()
+
+    const totalPage = Math.ceil(totalData / size)
+    const results = {
+        currentPage: page,
+        totalPage,
+        prevPage: page <= 1 ? null : page - 1,
+        nextPage: page >= totalPage ? null : page + 1,
+        data
+    }
+    res.json(successResponse(results))
+}

@@ -1,7 +1,8 @@
+import { verify } from "jsonwebtoken";
 import config from "../config";
 import { errorResponse } from "../utils/response";
 
-export default verifyJWT = (req, res, next) => {
+const verifyJWT = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
         return res.status(401).json(errorResponse("Unauthorized access"));
@@ -15,3 +16,5 @@ export default verifyJWT = (req, res, next) => {
         next();
     });
 }
+
+export default verifyJWT

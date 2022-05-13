@@ -31,14 +31,7 @@ app.use('/inventory', inventoryRouter)
 // async function run() {
 //     try {
 
-//         // get items by user email
-//         app.get("/my-inventory", verifyJWT, async (req, res) => {
-//             const { email } = req.decoded;
-//             const query = { email };
-//             const cursor = inventoryCollection.find(query);
-//             const data = await cursor.toArray();
-//             res.json(data);
-//         });
+
 
 //         // get inventory by id api
 
