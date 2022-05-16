@@ -38,7 +38,7 @@ app.use((0, _bodyParser.json)());
 app.use((0, _bodyParser.urlencoded)({
   extended: true
 }));
-app.use((0, _morgan.default)(_config2.default.env == 'dev' || _config2.default.env == 'development' ? 'dev' : 'combine')); // Routes
+app.use((0, _morgan.default)('dev')); // Routes
 
 app.get('/', (req, res) => {
   res.json((0, _response.successResponse)({

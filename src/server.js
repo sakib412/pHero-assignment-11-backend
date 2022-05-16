@@ -18,7 +18,7 @@ app.disable('x-powered-by')
 app.use(cors())
 app.use(json())
 app.use(urlencoded({ extended: true }))
-app.use(morgan((config.env == 'dev' || config.env == 'development') ? 'dev' : 'combine'))
+app.use(morgan('dev'))
 
 // Routes
 app.get('/', (req, res) => {
