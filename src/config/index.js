@@ -22,6 +22,7 @@ switch (env) {
     case 'prod':
     case 'production':
         envConfig = require('./prod').config
+        break
 
     default:
         envConfig = require('./dev').config
