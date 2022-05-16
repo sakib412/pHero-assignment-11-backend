@@ -5,6 +5,7 @@ import { successResponse } from "../utils/response";
 // Login route
 export const loginController = async (req, res) => {
     const { email } = req.body;
+    console.log(req.body)
     const access = sign({ email }, config.secrets.jwt, {
         expiresIn: config.secrets.jwtExp,
     });

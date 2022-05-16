@@ -86,6 +86,7 @@ const getLoggedInUserItems = async (req, res) => {
     const results = {
       currentPage: page,
       totalPage,
+      totalData,
       prevPage: page <= 1 ? null : page - 1,
       nextPage: page >= totalPage ? null : page + 1,
       data

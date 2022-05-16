@@ -18,6 +18,7 @@ const loginController = async (req, res) => {
   const {
     email
   } = req.body;
+  console.log(req.body);
   const access = (0, _jsonwebtoken.sign)({
     email
   }, _config.default.secrets.jwt, {
