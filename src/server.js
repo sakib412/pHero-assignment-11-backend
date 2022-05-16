@@ -31,7 +31,7 @@ app.use('/inventory', inventoryRouter)
 app.use(errorHandler)
 export const start = async () => {
     try {
-        await connect();
+        connect();
         app.listen(config.port, () => {
             console.log(`REST API on http://localhost:${config.port}/`)
         })

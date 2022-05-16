@@ -52,7 +52,7 @@ app.use(_errorHandler.default);
 
 const start = async () => {
   try {
-    await (0, _db.connect)();
+    (0, _db.connect)();
     app.listen(_config2.default.port, () => {
       console.log(`REST API on http://localhost:${_config2.default.port}/`);
     });
